@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卡牌抽取系統</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #F7EAE2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            padding: 20px;
+            width: 200px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-size: 1.5em;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .card span {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #AEDDEF;
+        }
+
+        .card.black {
+            background-color: #333;
+            color: white;
+        }
+
+        .draw-btn {
+            font-size: 1.5em;
+            padding: 15px 30px;
+            margin-top: 20px;
+            border: none;
+            background-color: #EADB80;
+            color: black;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .draw-btn:hover {
+            background-color: #d4c16a;
+        }
+
+        .log-container {
+            margin-top: 30px;
+            width: 80%;
+            max-width: 1000px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: left;
+        }
+
+        .log-container h3 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            color: #666;
+        }
+
+        .log-container ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            color: #444;
+            font-size: 1em;
+        }
+
+        .log-container ul li {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 5px;
+        }
+
+        .log-container ul li:first-child {
+            border-top: none;
+            margin-top: 0;
+            padding-top: 0;
+        }
+
+        /* RWD for smaller devices */
+        @media (max-width: 768px) {
+            .card {
+                width: 80%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>卡牌抽取系統</h1>
+
+    <div class="container">
+        <button class="draw-btn" onclick="drawCards()">抽取卡牌</button>
+        <div id="card1" class="card">策略卡牌</div>
+        <div id="card2" class="card">動作或物品卡牌</div>
+    </div>
+
+    <div class="log-container">
+        <h3>抽卡記錄</h3>
+        <ul id="log">
+        </ul>
+    </div>
+
+    <script>
+        const strategyCards = [
+            "白帽-所有權", "白帽-成就", "白帽-使命", "白帽-賦予創造力", "白帽-社會影響力",
+            "黑帽-所有權", "黑帽-稀缺性", "黑帽-避免", "黑帽-不確定性", "黑帽-社會影響力"
+        ];
+
+        const actionCards = [
+            "動作-走路", "動作-跑步", "動作-聽 PODCAST", "動作-學義大利文", "動作-學英式英文",
+            "動作-愛河游泳", "動作-爬壽山", "動作-參觀駁二的展覽", "動作-早睡早起", "動作-整理房間",
+            "動作-喝水", "動作-閱讀/看書", "動作-做筆記", "動作-預習", "動作-複習",
+            "動作-獨立思考", "動作-排隊", "物品-珍珠奶茶", "物品-鳳梨酥", "物品-牛肉麵",
+            "物品-太陽餅", "物品-阿里山檜木製品", "物品-台灣藍染", "物品-陶瓷", "物品-提燈",
+            "物品-雨傘", "物品-機車", "物品-保溫杯", "物品-麻將", "物品-台灣茶",
+            "物品-蘭花", "物品-郵票", "物品-鐵路便當"
+        ];
+
+        let strategyDeck = [...strategyCards];
+        let actionDeck = [...actionCards];
+        let logEntries = [];
+
+        function drawCards() {
+            let card1 = drawCardFromDeck(strategyDeck, strategyCards);
+            let card2 = drawCardFromDeck(actionDeck, actionCards);
+
+            updateCardDisplay("card1", card1);
+            updateCardDisplay("card2", card2);
+
+            logCardDraw(card1, card2);
+        }
+
+        function drawCardFromDeck(deck, originalDeck) {
+            if (deck.length === 0) {
+                deck.push(...originalDeck);
+            }
+
+            const randomIndex = Math.floor(Math.random() * deck.length);
+            return deck.splice(randomIndex, 1)[0];
+        }
+
+        function updateCardDisplay(cardId, cardText) {
+            const cardElement = document.getElementById(cardId);
+            cardElement.classList.remove("black");
+            cardElement.innerHTML = cardText.replace(/-([^\s]+)/, "-<span>$1</span>");
+
+            if (cardText.startsWith("黑帽")) {
+                cardElement.classList.add("black");
+            }
+        }
+
+        function logCardDraw(card1, card2) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `${timestamp}: ${card1} 與 ${card2}`;
+            logEntries.unshift(logEntry);
+
+            const logElement = document.getElementById("log");
+            logElement.innerHTML = "";
+            logEntries.forEach(entry => {
+                const li = document.createElement("li");
+                li.textContent = entry;
+                logElement.appendChild(li);
+            });
+        }
+    </script>
+
+</body>
+</html>

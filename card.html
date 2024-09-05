@@ -52,7 +52,7 @@
         .card span {
             font-size: 1.2em;
             font-weight: bold;
-            color: #AEDDEF;
+            color: #3D7878;
         }
 
         .card.black {
@@ -180,15 +180,8 @@
         function updateCardDisplay(cardId, cardText) {
             const cardElement = document.getElementById(cardId);
             cardElement.classList.remove("black");
-            let cardHTML = cardText.replace(/-([^\s]+)/, "-<span>$1</span>");
-        
-            // 檢查如果是白色背景，則替換顏色
-            if (!cardElement.classList.contains("black")) {
-                cardHTML = cardHTML.replace('#AEDDEF', '#3D7878');
-            }
-        
-            cardElement.innerHTML = cardHTML;
-        
+            cardElement.innerHTML = cardText.replace(/-([^\s]+)/, "-<span>$1</span>");
+
             if (cardText.startsWith("黑帽")) {
                 cardElement.classList.add("black");
             }

@@ -52,7 +52,7 @@
         .card span {
             font-size: 1.2em;
             font-weight: bold;
-            color: #3D7878;
+            color: #808040;
         }
 
         .card.black {
@@ -177,14 +177,21 @@
             return deck.splice(randomIndex, 1)[0];
         }
 
-        function updateCardDisplay(cardId, cardText) {
+      function updateCardDisplay(cardId, cardText) {
             const cardElement = document.getElementById(cardId);
             cardElement.classList.remove("black");
-            cardElement.innerHTML = cardText.replace(/-([^\s]+)/, "-<span>$1</span>");
-
+            let cardHTML = cardText.replace(/-([^\s]+)/, "-<span>$1</span>");
+        
+            // 檢查如果是黑底卡牌，則替換顏色
             if (cardText.startsWith("黑帽")) {
                 cardElement.classList.add("black");
+                cardHTML = cardHTML.replace('#808040', '#AEDDEF');
+            } else if (!cardElement.classList.contains("black")) {
+                // 如果是白底卡牌，則將顏色 #AEDDEF 轉為 #3D7878
+                cardHTML = cardHTML.replace('#AEDDEF', '#3D7878');
             }
+        
+            cardElement.innerHTML = cardHTML;
         }
 
 

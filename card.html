@@ -180,12 +180,20 @@
         function updateCardDisplay(cardId, cardText) {
             const cardElement = document.getElementById(cardId);
             cardElement.classList.remove("black");
-            cardElement.innerHTML = cardText.replace(/-([^\s]+)/, "-<span>$1</span>");
-
+            let cardHTML = cardText.replace(/-([^\s]+)/, "-<span>$1</span>");
+        
+            // 檢查如果是白色背景，則替換顏色
+            if (!cardElement.classList.contains("black")) {
+                cardHTML = cardHTML.replace('#AEDDEF', '#3D7878');
+            }
+        
+            cardElement.innerHTML = cardHTML;
+        
             if (cardText.startsWith("黑帽")) {
                 cardElement.classList.add("black");
             }
         }
+
 
         function logCardDraw(card1, card2) {
             const timestamp = new Date().toLocaleTimeString();
